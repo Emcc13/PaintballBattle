@@ -13,7 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import pb.ajneb97.juego.JugadorPaintball;
 import pb.ajneb97.versiones.V1_18;
 import pb.ajneb97.versiones.V1_19;
-
+import pb.ajneb97.versiones.V1_20;
 
 public class UtilidadesItems {
 
@@ -75,6 +75,11 @@ public class UtilidadesItems {
 	
 	public static ItemStack getCabeza(ItemStack item, String id,String textura){
 		String packageName = Bukkit.getServer().getClass().getPackage().getName();
+		if(packageName.contains("1_20_")){
+			V1_20 u = new V1_20();
+			ItemStack stack = u.getCabeza(item,id,textura);			
+			return stack;
+		}
 		if(packageName.contains("1_19_")){
 			V1_19 u = new V1_19();
 			ItemStack stack = u.getCabeza(item,id,textura);			
