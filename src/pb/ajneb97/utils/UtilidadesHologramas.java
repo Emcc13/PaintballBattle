@@ -31,9 +31,7 @@ public class UtilidadesHologramas {
 			Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 	            @Override
 	            public void run() {
-	            	final ArrayList<String> playersList = new ArrayList<String>();
-
-	        		ArrayList<JugadorDatos> jugadores = new ArrayList<JugadorDatos>();
+	        		ArrayList<JugadorDatos> jugadores;
 	        		if(periodo.equals("monthly")) {
 	        			jugadores = MySQL.getPlayerDataMonthly(plugin);
 	        		}else if(periodo.equals("weekly")) {
@@ -41,34 +39,29 @@ public class UtilidadesHologramas {
 	        		}else {
 	        			jugadores = MySQL.getPlayerData(plugin);
 	        		}
-	        		for(JugadorDatos j : jugadores) {
-	        			String name = j.getName();
-	        			int total = 0;
-	        			if(tipo.equals("kills")) {
-	        				total = j.getKills();
-	        			}else if(tipo.equals("wins")) {
-	        				total = j.getWins();
-	        			}
-	        			playersList.add(name+";"+total);
-	        		}
-	        		for(int i=0;i<playersList.size();i++) {
-	        			for(int k=i+1;k<playersList.size();k++) {
-	        				String[] separadosI = playersList.get(i).split(";");
-	        				int totalI = Integer.valueOf(separadosI[1]);
-	        				String[] separadosK = playersList.get(k).split(";");
-	        				int totalK = Integer.valueOf(separadosK[1]);
-	        				if(totalI < totalK) {
-	        					String aux = playersList.get(i);
-	        					playersList.set(i, playersList.get(k));
-	        					playersList.set(k, aux);
-	        				}
-	        			}
-	        		}
+					if (tipo.equals("kills"))
+						jugadores.sort((p1, p2)->{
+							if (p1.getKills()>p2.getKills())
+								return -1;
+							else if (p1.getKills()==p2.getKills())
+								return 0;
+							else
+								return 1;
+						});
+					else if (tipo.equals("wins"))
+						jugadores.sort((p1, p2)->{
+							if (p1.getWins()>p2.getWins())
+								return -1;
+							else if (p1.getWins()==p2.getWins())
+								return 0;
+							else
+								return 1;
+						});
 	        		Bukkit.getScheduler().runTask(plugin, new Runnable() {
 	                    @Override
 	                    public void run() {
 	                        // call the callback with the result
-	                        callback.alTerminar(playersList);
+	                        callback.alTerminar(jugadores);
 	                    }
 	                });
 	            }
@@ -80,45 +73,30 @@ public class UtilidadesHologramas {
 			Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 	            @Override
 	            public void run() {
-	            	final ArrayList<String> playersList = new ArrayList<String>();
+	            	final ArrayList<JugadorDatos> playersList;
 	            	if(!MySQL.isEnabled(plugin.getConfig())) {
-	            		for(JugadorDatos j : jugadores) {
-	            			String name = j.getName();
-	            			int total = 0;
-	            			if(tipo.equals("kills")) {
-	            				total = j.getKills();
-	            			}else if(tipo.equals("wins")) {
-	            				total = j.getWins();
-	            			}
-	            			playersList.add(name+";"+total);
-	            		}
+						playersList = jugadores;
 	            	}else {
-	            		ArrayList<JugadorDatos> jugadores = MySQL.getPlayerData(plugin);
-	            		for(JugadorDatos p : jugadores) {
-	            			String name = p.getName();
-	            			int total = 0;
-	            			if(tipo.equals("kills")) {
-	            				total = p.getKills();
-	            			}else if(tipo.equals("wins")) {
-	            				total = p.getWins();
-	            			}
-	            			playersList.add(name+";"+total);
-	            		}
+						playersList = MySQL.getPlayerData(plugin);
 	            	}
-	        		
-	        		for(int i=0;i<playersList.size();i++) {
-	        			for(int k=i+1;k<playersList.size();k++) {
-	        				String[] separadosI = playersList.get(i).split(";");
-	        				int totalI = Integer.valueOf(separadosI[1]);
-	        				String[] separadosK = playersList.get(k).split(";");
-	        				int totalK = Integer.valueOf(separadosK[1]);
-	        				if(totalI < totalK) {
-	        					String aux = playersList.get(i);
-	        					playersList.set(i, playersList.get(k));
-	        					playersList.set(k, aux);
-	        				}
-	        			}
-	        		}
+					if (tipo.equals("kills"))
+						jugadores.sort((p1, p2)->{
+							if (p1.getKills()>p2.getKills())
+								return -1;
+							else if (p1.getKills()==p2.getKills())
+								return 0;
+							else
+								return 1;
+						});
+					else if (tipo.equals("wins"))
+						jugadores.sort((p1, p2)->{
+							if (p1.getWins()>p2.getWins())
+								return -1;
+							else if (p1.getWins()==p2.getWins())
+								return 0;
+							else
+								return 1;
+						});
 	            	Bukkit.getScheduler().runTask(plugin, new Runnable() {
 	                    @Override
 	                    public void run() {

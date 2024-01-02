@@ -1,5 +1,6 @@
 package pb.ajneb97.managers;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -289,7 +290,7 @@ public class PartidaManager {
 			ItemStack item = null;
 			if(Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14") || Bukkit.getVersion().contains("1.15")
 					|| Bukkit.getVersion().contains("1.16") || Bukkit.getVersion().contains("1.17") || Bukkit.getVersion().contains("1.18")
-					|| Bukkit.getVersion().contains("1.19")) {
+					|| Bukkit.getVersion().contains("1.19") || Bukkit.getVersion().contains("1.20")) {
 				if(j.getSelectedHat().equals("chicken_hat")) {
 					item = new ItemStack(Material.EGG,1);
 				}else {
@@ -300,7 +301,7 @@ public class PartidaManager {
 				if(j.getSelectedHat().equals("chicken_hat")) {
 					item = new ItemStack(Material.EGG,1);
 				}else {
-					item = new ItemStack(Material.valueOf("SNOW_BALL"),1);
+					item = new ItemStack(Material.valueOf("SNOWBALL"),1);
 				}
 				
 			}
@@ -492,7 +493,7 @@ public class PartidaManager {
 		ItemStack item = null;
 		if(Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14") || Bukkit.getVersion().contains("1.15")
 				|| Bukkit.getVersion().contains("1.16") || Bukkit.getVersion().contains("1.17") || Bukkit.getVersion().contains("1.18")
-				|| Bukkit.getVersion().contains("1.19")) {
+				|| Bukkit.getVersion().contains("1.19") || Bukkit.getVersion().contains("1.20")) {
 			if(j.getSelectedHat().equals("chicken_hat")) {
 				item = new ItemStack(Material.EGG,1);
 			}else {
@@ -502,7 +503,7 @@ public class PartidaManager {
 			if(j.getSelectedHat().equals("chicken_hat")) {
 				item = new ItemStack(Material.EGG,1);
 			}else {
-				item = new ItemStack(Material.valueOf("SNOW_BALL"),1);
+				item = new ItemStack(Material.valueOf("SNOWBALL"), 1);
 			}
 		}
 
@@ -581,6 +582,8 @@ public class PartidaManager {
 		}
 		ArrayList<JugadorPaintball> jugadores = partida.getJugadores();
 		List<String> msg = messages.getStringList("gameFinished");
+		Long timestamp_id = System.currentTimeMillis();
+		Date date = new Date(timestamp_id);
 		for(JugadorPaintball j : jugadores) {
 			for(int i=0;i<msg.size();i++) {
 				j.getJugador().sendMessage(ChatColor.translateAlternateColorCodes('&', msg.get(i).replace("%status_message%", status).replace("%team1%", nameTeam1)
@@ -591,32 +594,21 @@ public class PartidaManager {
 			}
 			Equipo equipoJugador = partida.getEquipoJugador(j.getJugador().getName());
 			if(MySQL.isEnabled(plugin.getConfig())) {
-				int win = 0;
-				int lose = 0;
-				int tie = 0;
+				int matchresult;
 				if(equipoJugador.equals(ganador)) {
-					win = 1;
+					matchresult = 1;
 					TitleAPI.sendTitle(j.getJugador(), 10, 40, 10, messages.getString("winnerTitleMessage"), "");
 				}else if(ganador == null) {
-					tie = 1;
+					matchresult = 0;
 					TitleAPI.sendTitle(j.getJugador(), 10, 40, 10, messages.getString("tieTitleMessage"), "");
 				}else {
-					lose = 1;
+					matchresult = -1;
 					TitleAPI.sendTitle(j.getJugador(), 10, 40, 10, messages.getString("loserTitleMessage"), "");
 				}
-				//Aqui se crea/modifica el registro global del jugador
-				if(!MySQL.jugadorExiste(plugin, j.getJugador().getName())) {
-					MySQL.crearJugadorPartidaAsync(plugin, j.getJugador().getUniqueId().toString(), j.getJugador().getName(), "", win, tie, lose, j.getAsesinatos(),0, 1);
-				}else {
-					JugadorDatos player = MySQL.getJugador(plugin, j.getJugador().getName());
-					int kills = j.getAsesinatos()+player.getKills();
-					int wins = player.getWins()+win;
-					int loses = player.getLoses()+lose;
-					int ties = player.getTies()+tie;
-					MySQL.actualizarJugadorPartidaAsync(plugin, j.getJugador().getUniqueId().toString(), j.getJugador().getName(), wins, loses, ties, kills);
-				}				
-				//Este registro es el que se crea para datos mensuales y semanales
-				MySQL.crearJugadorPartidaAsync(plugin, j.getJugador().getUniqueId().toString(), j.getJugador().getName(), partida.getNombre(), win, tie, lose, j.getAsesinatos(),0,0);	
+				MySQL.insertMatchPlayerDataAsync(plugin,
+						timestamp_id, date, j.getJugador().getUniqueId().toString(), j.getJugador().getName(),
+						matchresult, partida.getNombre(), j.getAsesinatos()
+						);
 			}else {
 				plugin.registerPlayer(j.getJugador().getUniqueId().toString()+".yml");
 				if(plugin.getJugador(j.getJugador().getName()) == null) {
@@ -810,7 +802,7 @@ public class PartidaManager {
 		jugadorDañado.getJugador().teleport(equipo.getSpawn());
 		if(Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14") || Bukkit.getVersion().contains("1.15")
 				|| Bukkit.getVersion().contains("1.16") || Bukkit.getVersion().contains("1.17") || Bukkit.getVersion().contains("1.18")
-				|| Bukkit.getVersion().contains("1.19")) {
+				|| Bukkit.getVersion().contains("1.19") || Bukkit.getVersion().contains("1.20")) {
 			if(jugadorDañado.getSelectedHat().equals("chicken_hat")) {
 				jugadorDañado.getJugador().getInventory().removeItem(new ItemStack(Material.EGG));
 			}else {
@@ -820,7 +812,7 @@ public class PartidaManager {
 			if(jugadorDañado.getSelectedHat().equals("chicken_hat")) {
 				jugadorDañado.getJugador().getInventory().removeItem(new ItemStack(Material.EGG));
 			}else {
-				jugadorDañado.getJugador().getInventory().removeItem(new ItemStack(Material.valueOf("SNOW_BALL")));
+				jugadorDañado.getJugador().getInventory().removeItem(new ItemStack(Material.valueOf("SNOWBALL")));
 			}
 		}
 		PartidaManager.setBolasDeNieve(jugadorDañado,config);
@@ -867,7 +859,7 @@ public class PartidaManager {
 		int snowballs = Integer.valueOf(config.getString("snowballs_per_kill"));
 		if(Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14") || Bukkit.getVersion().contains("1.15")
 				|| Bukkit.getVersion().contains("1.16") || Bukkit.getVersion().contains("1.17") || Bukkit.getVersion().contains("1.18")
-				|| Bukkit.getVersion().contains("1.19")) {
+				|| Bukkit.getVersion().contains("1.19") || Bukkit.getVersion().contains("1.20")) {
 			if(jugadorAtacante.getSelectedHat().equals("chicken_hat")) {
 				jugadorAtacante.getJugador().getInventory().addItem(new ItemStack(Material.EGG,snowballs));
 			}else {
@@ -878,7 +870,7 @@ public class PartidaManager {
 			if(jugadorAtacante.getSelectedHat().equals("chicken_hat")) {
 				jugadorAtacante.getJugador().getInventory().addItem(new ItemStack(Material.EGG,snowballs));
 			}else {
-				jugadorAtacante.getJugador().getInventory().addItem(new ItemStack(Material.valueOf("SNOW_BALL"),snowballs));
+				jugadorAtacante.getJugador().getInventory().addItem(new ItemStack(Material.valueOf("SNOWBALL"),snowballs));
 			}
 			
 		}

@@ -14,6 +14,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.gmail.filoghost.holographicdisplays.api.VisibilityManager;
 
 import pb.ajneb97.PaintballBattle;
+import pb.ajneb97.database.JugadorDatos;
 import pb.ajneb97.database.MySQL;
 import pb.ajneb97.database.MySQLCallback;
 import pb.ajneb97.utils.UtilidadesHologramas;
@@ -82,17 +83,17 @@ public class TopHologram {
     	for(int i=0;i<lineas.size();i++){
 			String linea = lineas.get(i).replace("%type%",typeName).replace("%period%", periodName);
 			if(linea.contains("%scoreboard_lines%")) {
-				if(MySQL.isEnabled(config) && !period.equals("global")) {
+				if(MySQL.isEnabled(config)) {
 					UtilidadesHologramas.getTopPlayersSQL(plugin, type, period, new MySQLCallback() {
 						@Override
-						public void alTerminar(ArrayList<String> playersList) {
+						public void alTerminar(ArrayList<JugadorDatos> playersList) {
 							// TODO Auto-generated method stub
 							for(int c=0;c<topPlayersMax;c++) {
 								int num = c+1;
 								try {
-									String[] separados = playersList.get(c).split(";");
+									JugadorDatos jugadorDatos = playersList.get(c);
 									hologram.appendTextLine(ChatColor.translateAlternateColorCodes('&', lineaMessage.replace("%position%", num+"")
-											.replace("%name%", separados[0]).replace("%points%", separados[1])));
+											.replace("%name%", jugadorDatos.getName()).replace("%points%", String.valueOf(type.equals("kills")?jugadorDatos.getKills():jugadorDatos.getWins()))));
 								}catch(Exception e) {
 									break;
 								}
@@ -105,13 +106,13 @@ public class TopHologram {
 				}else {
 					UtilidadesHologramas.getTopPlayers(plugin,plugin.getJugadores(), type,new MySQLCallback() {
 						@Override
-						public void alTerminar(ArrayList<String> playersList) {
+						public void alTerminar(ArrayList<JugadorDatos> playersList) {
 							for(int c=0;c<topPlayersMax;c++) {
 								int num = c+1;
 								try {
-									String[] separados = playersList.get(c).split(";");
+									JugadorDatos jugadorDatos = playersList.get(c);
 									hologram.appendTextLine(ChatColor.translateAlternateColorCodes('&', lineaMessage.replace("%position%", num+"")
-											.replace("%name%", separados[0]).replace("%points%", separados[1])));
+											.replace("%name%", jugadorDatos.getName()).replace("%points%", String.valueOf(type.equals("kills")?jugadorDatos.getKills():jugadorDatos.getWins()))));
 								}catch(Exception e) {
 									break;
 								}

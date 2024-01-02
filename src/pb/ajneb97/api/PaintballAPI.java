@@ -20,19 +20,6 @@ public class PaintballAPI {
 		this.plugin = plugin;
 	}
 	
-//	public static JugadorDatos getPaintballDatos(Player player) {
-//		if(!MySQL.isEnabled(plugin.getConfig())) {
-//			JugadorDatos j = plugin.getJugador(player.getName());
-//			if(j != null) {
-//				return new JugadorPaintballDatos(j.getWins(),j.getLoses(),j.getTies(),j.getKills(),j.getHats(),j.getPerks());
-//			}else {
-//				return new JugadorPaintballDatos(0,0,0,0,new ArrayList<Hat>(),new ArrayList<Perk>());
-//			}
-//		}else {
-//			return MySQL.getStatsTotales(plugin, player.getName(),"Coins");
-//		}
-//	}
-	
 	public static int getCoins(Player player) {
 		if(!MySQL.isEnabled(plugin.getConfig())) {
 			JugadorDatos j = plugin.getJugador(player.getName());
@@ -42,7 +29,7 @@ public class PaintballAPI {
 				return 0;
 			}
 		}else {
-			return MySQL.getStatsTotales(plugin, player.getName(),"Coins");
+			return MySQL.getCoins(plugin, player.getUniqueId().toString());
 		}
 	}
 	
@@ -53,7 +40,7 @@ public class PaintballAPI {
 				j.aumentarCoins(coins);
 			}
 		}else {
-			MySQL.agregarCoinsJugadorAsync(plugin, player.getName(), coins);
+			MySQL.updatePlayerCoinsAsync(plugin, player.getUniqueId().toString(), coins);
 		}
 	}
 	
@@ -64,7 +51,7 @@ public class PaintballAPI {
 				j.disminuirCoins(coins);
 			}
 		}else {
-			MySQL.removerCoinsJugadorAsync(plugin, player.getName(), coins);
+			MySQL.updatePlayerCoinsAsync(plugin, player.getUniqueId().toString(), -coins);
 		}
 	}
 	
@@ -77,7 +64,7 @@ public class PaintballAPI {
 				return 0;
 			}
 		}else {
-			return MySQL.getStatsTotales(plugin, player.getName(),"Win");
+			return MySQL.getWins(plugin, player.getUniqueId().toString());
 		}
 		
 	}
@@ -91,7 +78,7 @@ public class PaintballAPI {
 				return 0;
 			}
 		}else {
-			return MySQL.getStatsTotales(plugin, player.getName(),"Lose");
+			return MySQL.getLose(plugin, player.getUniqueId().toString());
 		}
 		
 	}
@@ -105,7 +92,7 @@ public class PaintballAPI {
 				return 0;
 			}
 		}else {
-			return MySQL.getStatsTotales(plugin, player.getName(),"Tie");
+			return MySQL.getTie(plugin, player.getUniqueId().toString());
 		}
 	}
 	
@@ -118,7 +105,7 @@ public class PaintballAPI {
 				return 0;
 			}
 		}else {
-			return MySQL.getStatsTotales(plugin, player.getName(),"Kills");
+			return MySQL.getKills(plugin, player.getUniqueId().toString());
 		}
 		
 	}

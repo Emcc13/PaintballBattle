@@ -18,6 +18,7 @@ public class ConexionDatabase {
 	private String username;
 	private String password;
 	private String tablePlayerdata;
+	private String tablePlayerCoins;
 	private String tablePlayerPerks;
 	private String tablePlayerHats;
 	private int port;
@@ -28,17 +29,23 @@ public class ConexionDatabase {
 		database = config.getString("mysql-database.database");		
 		username = config.getString("mysql-database.username");
 		password = config.getString("mysql-database.password");
-		tablePlayerdata = "paintball_data";
+		tablePlayerdata = "paintball_matches";
+		tablePlayerCoins = "paintball_coins";
 		tablePlayerPerks = "paintball_perks";
 		tablePlayerHats = "paintball_hats";
 		mySqlAbrirConexion();
-		MySQL.createTablePlayers(this);
+		MySQL.createTablePlayerMatchStats(this);
+		MySQL.createTableCoins(this);
 		MySQL.createTablePerks(this);
 		MySQL.createTableHats(this);
 	}
 	
 	public String getTablePlayers(){
 		return this.tablePlayerdata;
+	}
+
+	public String getTablePlayerCoins(){
+		return this.tablePlayerCoins;
 	}
 	
 	public String getTablePerks(){

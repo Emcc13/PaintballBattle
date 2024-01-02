@@ -83,7 +83,7 @@ public class Checks {
 	public static void checkearYModificar(PaintballBattle plugin, boolean primeraVez) {
 				if(!Bukkit.getVersion().contains("1.13") && !Bukkit.getVersion().contains("1.14") && !Bukkit.getVersion().contains("1.15")
 						&& !Bukkit.getVersion().contains("1.16") && !Bukkit.getVersion().contains("1.17") && !Bukkit.getVersion().contains("1.18")
-						&& !Bukkit.getVersion().contains("1.19")) {
+						&& !Bukkit.getVersion().contains("1.19") && !Bukkit.getVersion().contains("1.20")) {
 					FileConfiguration config = plugin.getConfig();
 					FileConfiguration shop = plugin.getShop();
 					if(primeraVez) {
@@ -103,7 +103,7 @@ public class Checks {
 						modificarPath(config,"shopUnlockSound","FIREWORK_BLAST;10;2");
 						modificarPath(config,"hatAbilityActivatedSound","CHEST_OPEN;10;1.5");
 						modificarPath(config,"explosiveHatSound","EXPLODE;10;1");
-						modificarPath(config,"killstreaks_items.more_snowballs.item","SNOW_BALL");
+						modificarPath(config,"killstreaks_items.more_snowballs.item","SNOWBALL");
 						modificarPath(config,"killstreaks_items.lightning.item","GOLD_AXE");
 						modificarPath(config,"hats_items.present_hat.item","SKULL_ITEM:3");
 						modificarPath(config,"hats_items.assassin_hat.item","SKULL_ITEM:3");
